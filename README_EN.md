@@ -4,7 +4,7 @@
 
 Pure C# PP-OCRv6 inference library: cross-platform hand-written kernels and GEMM, very high performance, low memory requirements, and very high accuracy.
 It ships a managed ONNX interpreter and does not depend on Paddle Inference, ONNX Runtime, or OpenCV native libraries.
-GPU support: Vulkan (Windows / Android) and Metal (macOS), .NET 10 only — still pure C#, with no bundled native binaries.
+GPU support: Vulkan and Metal (macOS), .NET 10 only — still pure C#, with no bundled native binaries.
 
 The core API accepts interleaved pixels (BGR24 by default; RGB24 / BGRA32 / RGBA32 are also first-class). It does not decode images, so ImageSharp, SkiaSharp, or OpenCvSharp are not required.
 
@@ -160,7 +160,7 @@ using PaddleOcrAll ocr = await PaddleOcrAll.LoadAsync(ChineseV6TinyModels.Defaul
 });
 ```
 
-Vulkan covers Windows / Android (loading the system loader directly); Metal covers macOS arm64. Pass `OcrBackend.Cpu` to stay off the GPU entirely. GPU backends are only compiled in the `net10.0` target.
+Vulkan loads the system loader directly; Metal covers macOS arm64. Pass `OcrBackend.Cpu` to stay off the GPU entirely. GPU backends are only compiled in the `net10.0` target.
 
 ## Per-character boxes
 
@@ -235,7 +235,7 @@ ImageSharp's default allocator splits pixels into 4MB chunks, so large images do
 | CI architectures    | Windows x64 / x86 / ARM64, Linux x64 / ARM64, macOS x64 / ARM64                                                                                                          |
 | SIMD                | .NET 10 probes AVX → AVX2 → AVX-512 / VNNI at runtime; Vector/scalar when those ISAs are missing or on ARM                                                               |
 | Input               | Interleaved pixels (BGR24 by default; RGB24 / BGRA32 / RGBA32 also accepted); no image path, file, or image-library API                                                  |
-| Device              | CPU by default; `net10.0` also has optional GPU backends (`OcrBackend`): Vulkan loading the system loader directly (`vulkan-1.dll` on Windows, `libvulkan.so` on Android), Metal via the macOS system framework; `netstandard2.0` is CPU only |
+| Device              | CPU by default; `net10.0` also has optional GPU backends (`OcrBackend`): Vulkan loading the system loader directly (`vulkan-1.dll` on Windows, `libvulkan.so.1` on Linux, `libvulkan.so` on Android), Metal via the macOS system framework; `netstandard2.0` is CPU only |
 | Android             | Currently run through the dev host `test/Sdcb.SimdPaddleOCR.AndroidBench` (`net10.0-android`, references the `net10.0` library, driven over adb) on a Snapdragon 8 Gen 3, CPU and Vulkan; see [`docs/vulkan-8gen3.md`](docs/vulkan-8gen3.md). Desktop Vulkan routing and shaders are unchanged |
 | WebAssembly         | Benchmarked via dev host `test/Sdcb.SimdPaddleOCR.WasmBench` (`net10.0` `browser-wasm` multi-threaded Web Workers + SharedArrayBuffer) running pure CPU inference across tiny / small / medium models; see [`docs/wasm.md`](docs/wasm.md) |
 | NativeAOT           | Keep the core assembly and the model assemblies you use when publishing trimmed                                                                                          |

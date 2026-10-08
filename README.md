@@ -4,7 +4,7 @@
 
 纯 C# PP-OCRv6 推理库：多平台手写 Kernel / GEMM 等算子、超高性能、低内存需求、超高准确率。
 自带托管 ONNX 解释器，不依赖 Paddle Inference、ONNX Runtime 或 OpenCV 原生库。
-GPU 支持 Vulkan（Windows / Android）与 Metal（macOS），仅 .NET 10；同样纯 C#、不内嵌任何原生二进制。
+GPU 支持 Vulkan 与 Metal（macOS），仅 .NET 10；同样纯 C#、不内嵌任何原生二进制。
 
 核心 API 接收交错像素内存（默认 BGR24，也可直接传 RGB24 / BGRA32 / RGBA32），不负责图片解码，因此不会强制引入 ImageSharp、SkiaSharp 或 OpenCvSharp。
 
@@ -160,7 +160,7 @@ using PaddleOcrAll ocr = await PaddleOcrAll.LoadAsync(ChineseV6TinyModels.Defaul
 });
 ```
 
-Windows / Android 走 Vulkan（直连系统加载器），macOS arm64 走 Metal。完全不用 GPU 就显式 `OcrBackend.Cpu`。GPU 后端只在 `net10.0` 下可用。
+Vulkan 直连系统加载器，macOS arm64 走 Metal。完全不用 GPU 就显式 `OcrBackend.Cpu`。GPU 后端只在 `net10.0` 下可用。
 
 ## 逐字坐标框
 
@@ -235,7 +235,7 @@ ImageSharp 默认分配器会把像素拆成 4MB 块，大图上拿不到一整�
 | CI 架构    | Windows x64 / x86 / ARM64，Linux x64 / ARM64，macOS x64 / ARM64                                                             |
 | SIMD       | .NET 10 运行时探测 AVX → AVX2 → AVX-512 / VNNI；无对应指令集或 ARM 时用 Vector/标量                                         |
 | 输入       | 交错像素内存（默认 BGR24，也可 RGB24 / BGRA32 / RGBA32）；无图片路径、文件或图片库 API                                      |
-| 设备       | 默认 CPU；`net10.0` 另有可选 GPU 后端（`OcrBackend`）：Vulkan 直连系统加载器（Windows `vulkan-1.dll`、Android `libvulkan.so`），Metal 走 macOS 系统框架；`netstandard2.0` 只有 CPU |
+| 设备       | 默认 CPU；`net10.0` 另有可选 GPU 后端（`OcrBackend`）：Vulkan 直连系统加载器（Windows `vulkan-1.dll`、Linux `libvulkan.so.1`、Android `libvulkan.so`），Metal 走 macOS 系统框架；`netstandard2.0` 只有 CPU |
 | 安卓       | 目前通过开发用宿主 `test/Sdcb.SimdPaddleOCR.AndroidBench`（`net10.0-android`，引用 `net10.0` 库，adb 驱动）在骁龙 8 Gen 3 上跑 CPU 与 Vulkan，见 [`docs/vulkan-8gen3.md`](docs/vulkan-8gen3.md)；桌面的 Vulkan 路由和 shader 没有变 |
 | WebAssembly | 通过开发用宿主 `test/Sdcb.SimdPaddleOCR.WasmBench`（`net10.0` `browser-wasm` 多线程 Web Workers + SharedArrayBuffer）跑 CPU 推理，支持 tiny / small / medium，详见 [`docs/wasm.md`](docs/wasm.md) |
 | NativeAOT  | 裁剪发布时请保留核心程序集和所用模型程序集                                                                                  |
