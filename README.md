@@ -204,6 +204,7 @@ ImageSharp 默认分配器会把像素拆成 4MB 块，大图上拿不到一整�
 | 输入       | 交错像素内存（默认 BGR24，也可 RGB24 / BGRA32 / RGBA32）；无图片路径、文件或图片库 API                                      |
 | 设备       | 默认 CPU；`net10.0` 另有可选 GPU 后端（`OcrBackend`）：Vulkan 直连系统加载器（Windows `vulkan-1.dll`、Linux `libvulkan.so.1`、Android `libvulkan.so`），Metal 走 macOS 系统框架；`netstandard2.0` 只有 CPU |
 | 安卓       | 目前通过开发用宿主 `test/Sdcb.SimdPaddleOCR.AndroidBench`（`net10.0-android`，引用 `net10.0` 库，adb 驱动）在骁龙 8 Gen 3 上跑 CPU 与 Vulkan，见 [`docs/vulkan-8gen3.md`](docs/vulkan-8gen3.md)；桌面的 Vulkan 路由和 shader 没有变 |
+| WebAssembly | 通过开发用宿主 `test/Sdcb.SimdPaddleOCR.WasmBench`（`net10.0` `browser-wasm` 多线程 Web Workers + SharedArrayBuffer）跑 CPU 推理，支持 tiny / small / medium，详见 [`docs/wasm.md`](docs/wasm.md) |
 | NativeAOT  | 裁剪发布时请保留核心程序集和所用模型程序集                                                                                  |
 
 ## 许可证与第三方组件

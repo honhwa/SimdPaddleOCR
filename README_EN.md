@@ -204,6 +204,7 @@ ImageSharp's default allocator splits pixels into 4MB chunks, so large images do
 | Input               | Interleaved pixels (BGR24 by default; RGB24 / BGRA32 / RGBA32 also accepted); no image path, file, or image-library API                                                  |
 | Device              | CPU by default; `net10.0` also has an optional Vulkan backend (`OcrBackend`) loading the system loader directly: `vulkan-1.dll` on Windows, `libvulkan.so.1` on Linux, `libvulkan.so` on Android; `netstandard2.0` is CPU only |
 | Android             | Currently run through the dev host `test/Sdcb.SimdPaddleOCR.AndroidBench` (`net10.0-android`, references the `net10.0` library, driven over adb) on a Snapdragon 8 Gen 3, CPU and Vulkan; see [`docs/vulkan-8gen3.md`](docs/vulkan-8gen3.md). Desktop Vulkan routing and shaders are unchanged |
+| WebAssembly         | Benchmarked via dev host `test/Sdcb.SimdPaddleOCR.WasmBench` (`net10.0` `browser-wasm` multi-threaded Web Workers + SharedArrayBuffer) running pure CPU inference across tiny / small / medium models; see [`docs/wasm.md`](docs/wasm.md) |
 | NativeAOT           | Keep the core assembly and the model assemblies you use when publishing trimmed                                                                                          |
 
 ## License and third-party components
