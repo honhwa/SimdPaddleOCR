@@ -5,7 +5,8 @@ param(
     [int]$Count = 0,
     [string]$Out = "",
     [switch]$Open,
-    [switch]$NoBuild
+    [switch]$NoBuild,
+    [switch]$NoAot
 )
 
 $ErrorActionPreference = "Stop"
@@ -13,8 +14,12 @@ $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ProjectDir = $ScriptDir
 
 if (-not $NoBuild) {
-    Write-Host "[WasmBench] Building and publishing WebAssembly app..." -ForegroundColor Cyan
-    dotnet publish $ProjectDir -c Release --nologo
+    Write-Host "[WasmBench] Building and publishing WebAssembly app (AOT: $(-not $NoAot))..." -ForegroundColor Cyan
+    $PublishArgs = @($ProjectDir, "-c", "Release", "--nologo")
+    if ($NoAot) {
+        $PublishArgs += @("-p:RunAOTCompilation=false")
+    }
+    dotnet publish @PublishArgs
     if ($LASTEXITCODE -ne 0) {
         throw "Failed to publish WasmBench project."
     }

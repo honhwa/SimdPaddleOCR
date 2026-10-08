@@ -258,6 +258,17 @@
             }
         }
 
+        window.addEventListener('error', (e) => {
+            const errStr = "[WINDOW ERROR] " + (e.error ? (e.error.stack || e.error.message) : e.message);
+            log(errStr);
+            try { fetch('/api/log', { method: 'POST', body: errStr }).catch(() => {}); } catch {}
+        });
+        window.addEventListener('unhandledrejection', (e) => {
+            const errStr = "[UNHANDLED REJECTION] " + (e.reason ? (e.reason.stack || e.reason.message || e.reason) : e);
+            log(errStr);
+            try { fetch('/api/log', { method: 'POST', body: errStr }).catch(() => {}); } catch {}
+        });
+
         const origLog = console.log;
         console.log = function(...args) {
             origLog.apply(console, args);
@@ -271,7 +282,15 @@
                     str = args[0];
                 }
             } else {
-                str = args.map(a => typeof a === 'object' ? (a && a.payload ? a.payload : JSON.stringify(a)) : String(a)).join(' ');
+                str = args.map(a => {
+                    if (a instanceof Error) return a.stack || a.message || String(a);
+                    if (typeof a === 'object' && a !== null) {
+                        if (a.payload) return a.payload;
+                        if (a.message) return a.message + (a.stack ? '\n' + a.stack : '');
+                        return JSON.stringify(a);
+                    }
+                    return String(a);
+                }).join(' ');
             }
             if (str && !str.includes("Failed to patch opcode")) {
                 log(str);
