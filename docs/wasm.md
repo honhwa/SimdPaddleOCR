@@ -1,7 +1,7 @@
 # SimdPaddleOCR — WebAssembly (WASM) 4w 性能与基准测试报告
 
 测试环境：
-* **宿主硬件**：AMD Ryzen (32 逻辑核心), Windows 11
+* **宿主硬件**：与 [`vulkan-uhd770.md`](vulkan-uhd770.md) 同一台实测机（x64 桌面 CPU），Windows 11
 * **运行时框架**：.NET 10.0 (`net10.0` / `browser-wasm`)
 * **浏览器引擎**：Microsoft Edge (Chromium 内核，Headless 模式)
 * **SIMD 特性**：WASM SIMD128 (`Vector<float>.Count = 4`, `Vector.IsHardwareAccelerated = True`)
@@ -24,7 +24,7 @@
 
 > *注：以上数据均为开启 LLVM AOT 静态编译的实测指标。若在未开启 AOT 的纯 JIT（Jiterpreter）模式下运行，性能会慢 8~30 倍，JIT 模式仅建议作为跳过编译等待的本地快速调试手段，生产环境必须使用 AOT。*
 
-在浏览器多线程环境下，`tiny 4w` 运行全量 100 张图平均耗时仅需 **102.8 ms**（吞吐量高达 **9.73 张/秒**），相比桌面原生 RyuJIT (AVX-512) 的 ~45ms 仅相差约 2.3 倍，已完全达到商用网页前端纯离线、低延迟实时 OCR 的性能标准。
+在浏览器多线程环境下，`tiny 4w` 运行全量 100 张图平均耗时仅需 **102.8 ms**（吞吐量高达 **9.73 张/秒**），相比同机桌面原生（`--engine sharp`，tiny 中位 ~44ms，见 [`vulkan-uhd770.md`](vulkan-uhd770.md)）仅相差约 2.3 倍，已完全达到商用网页前端纯离线、低延迟实时 OCR 的性能标准。
 
 ---
 
